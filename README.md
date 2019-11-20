@@ -1,6 +1,6 @@
 # UCSC-Dining-Hall-Menu-API
 
-A Node.js program to scrape https://nutrition.sa.ucsc.edu/  
+A Node.js program to scrape menu items from https://nutrition.sa.ucsc.edu/  
 Required parameters:<ul>
 	<li>Required, location: "Rachel Carson Oakes" || "Colleges Nine and Ten" || "Cowell Stevenson" || "Crown Merrill" || "Porter Kresge"</li>
 	<li>Required, meal: "Breakfest" || "Lunch" || "Dinner" || "Late Night"  </li>
