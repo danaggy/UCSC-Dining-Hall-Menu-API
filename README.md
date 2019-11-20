@@ -8,5 +8,4 @@ Required parameters:<ul>
 	<li>Optional, allergens: comma seperated list of allergens to filter menu items. Possible allergens are soy, eggs, milk, vegan, gluten, pork, veggie, fish, shellfish, nuts, treenut, halal, and beef </li>
 </ul>
 
-example call: http://localhost:8080/?location=Colleges Nine and Ten&meal=Breakfest&date=10/18/2019
- 
+example call: http://localhost:8080/?location=Colleges Nine and Ten&meal=Late Night&date=12/1/2019&allergens=milk, eggs
