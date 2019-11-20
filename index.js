@@ -14,8 +14,26 @@ URLMap.set("Porter Kresge", "https://nutrition.sa.ucsc.edu/shortmenu.aspx?sName=
 app.get('/', function(req, res){
     let location = req.query.location;
     let meal = req.query.meal;
-    //must be mm/dd/yyyy
-    let date = req.query.date;
+    //no allergens if empty
+    var allergens;
+    if(req.query.allergens != undefined){
+    	allergens = req.query.allergens.split(",").map(function(item){
+  			return item.trim() + ".gif";
+		});
+    }
+    else{
+    	allergens = [];
+    }
+    //date is today if empty
+    var date;
+    if(req.query.date != undefined){
+    	//must be mm/dd/yyyy
+    	date = req.query.date;
+    }
+    else{
+    	date ="today";
+    }
+  
     var reqUrl = URLMap.get(location);
     //catch misspelled location names
     if(reqUrl == null){
@@ -32,7 +50,7 @@ app.get('/', function(req, res){
 		url : reqUrl,
 		headers: {
 			'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.87 Safari/537.36',
-	        'Cookie': 'PS_DEVICEFEATURES=width:1280 height:720 pixelratio:2.5 touch:0 geolocation:1 websockets:1 webworkers:1 datepicker:1 dtpicker:1 timepicker:1 dnd:1 sessionstorage:1 localstorage:1 history:1 canvas:1 svg:1 postmessage:1 hc:0 maf:0; SavedAllergens=; SavedWebCodes=; WebInaCartDates=; WebInaCartMeals=; WebInaCartRecipes=; WebInaCartQtys=; WebInaCartLocation=40'
+	        'Cookie': 'PS_DEVICEFEATURES=width:1280 height:720 pixelratio:2.5 touch:0 geolocation:1 websockets:1 webworkers:1 datepicker:1 dtpicker:1 timepicker:1 dnd:1 sessionstorage:1 localstorage:1 history:1 canvas:1 svg:1 postmessage:1 hc:0 maf:0; SavedAllergens=; SavedWebCodes=; WebInaCartDates=; WebInaCartMeals=; WebInaCartRecipes=; WebInaCartQtys=; WebInaCartLocation=05'
 	    }
 	};
 	// The structure of our request call
@@ -65,9 +83,22 @@ app.get('/', function(req, res){
 	      			break;
 	      	}
 	      	var text = [];
-	      	// select all tbody's that are children of a table, gets the whole row
+	      	//gets the whole row
 	      	var rows = $('table> tbody', menuTable).toArray();
+	      	var skip = false;
 	      	for(var i = 0; i < rows.length; i++){
+	      		//check allergens for this row against our filter, skip if matched
+	      		var thisAllergens = $('td > img' ,rows[i]).toArray();
+	      		for(var j = 0; j < thisAllergens.length; j++){
+	      			if(allergens.includes($(thisAllergens[j]).attr('src').substring(13))){
+	      				skip = true;
+	      				break;
+	      			}
+	      		}
+	      		if(skip){
+	      			skip = false;
+	      			continue;
+	      		}
 	      		//get the recipe name from each row
 	      		var menuItem = $('span', rows[i]).text().trim();
 	      		text.push(menuItem);
